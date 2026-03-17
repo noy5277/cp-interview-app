@@ -17,18 +17,16 @@ Pushes the image to your ECR repository:
 ```
 128955061512.dkr.ecr.us-east-2.amazonaws.com/hello-world
 ```
-Using role:
-```
-
-```
 ---
 
 ## Project Structure
+```
 .
 ├── app/
 │   └── index.js
 ├── Dockerfile
 └── README.md
+```
 
 ## Build the Docker Image
 
