@@ -49,6 +49,6 @@ jobs:
           cd deploy-repo
           sed -i "s|image:.*${{ env.ECR_REPOSITORY }}:.*|image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}|" apps/stage/hello-app/deployment.yaml
           git add .
-          git commit -m "docker release"
+          git commit -m "docker release" 
           git push origin main
 
