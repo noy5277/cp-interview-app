@@ -63,5 +63,4 @@ jobs:
           git config user.email "github-actions@github.com"
           git add .
           git commit -m "New docker release" || echo "No changes"
-          git remote set-url origin https://${{ secrets.DEPLOYMENT_REPO_TOKEN }}@github.com/noy5277/cp-interview-deployments.git
-          git push
+          git push origin main
