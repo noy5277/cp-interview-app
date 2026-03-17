@@ -1,0 +1,55 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    paths:
+      - 'app/**'
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: us-east-2
+  ECR_REGISTRY: 128955061512.dkr.ecr.us-east-2.amazonaws.com
+  ECR_REPOSITORY: hello-world
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Configure AWS creds from GitHub secrets
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR (runtime password)
+        run: |
+          aws ecr get-login-password --region $AWS_REGION \
+            | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+      - name: Compute image tags
+        id: vars
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          echo "short_sha=$SHORT_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Build image
+        run: |
+          IMAGE_URI=${ECR_REGISTRY}/${ECR_REPOSITORY}
+          docker build \
+            -t "$IMAGE_URI:${{ steps.vars.outputs.short_sha }}" \
+            -t "$IMAGE_URI:latest" \
+            -f Dockerfile \
+            .
+
+      - name: Push image tags
+        run: |
+          IMAGE_URI=${ECR_REGISTRY}/${ECR_REPOSITORY}
+          docker push "$IMAGE_URI:${{ steps.vars.outputs.short_sha }}"
+          docker push "$IMAGE_URI:latest"
