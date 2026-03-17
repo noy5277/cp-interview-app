@@ -49,13 +49,12 @@ jobs:
         run: |
           git clone https://${{ secrets.DEPLOYMENT_REPO_TOKEN }}@github.com/noy5277/cp-interview-deployments.git
       
+
       - name: Edit docker tag Commit and push
         run: |
           cd cp-interview-deployments
-          sed -E 's/(image:.*:).*/\1${IMAGE_TAG}/' apps/stage/hello-app/deployment.yaml
-          git add .
-          git commit -m "New docker release" || echo "No changes"
-          git push
+          sed -i -E "s|(image:.*:).*|\1${IMAGE_TAG}|" apps/stage/hello-app/deployment.yaml
+
 
       - name: Commit and push
         run: |
@@ -64,4 +63,5 @@ jobs:
           git config user.email "github-actions@github.com"
           git add .
           git commit -m "New docker release" || echo "No changes"
+          git remote set-url origin https://${{ secrets.DEPLOYMENT_REPO_TOKEN }}@github.com/noy5277/cp-interview-deployments.git
           git push
