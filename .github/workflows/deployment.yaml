@@ -41,15 +41,5 @@ jobs:
             -f Dockerfile . --push
           echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
 
-      - name: Update Deployment Repo
-        run: |
-          git clone https://x-access-token:${{ secrets.DEPLOYMENT_REPO_TOKEN }}@://github.com{{ env.DEPLOY_REPO }}.git deploy-repo
-          cd deploy-repo
-          sed -i "s|image:.*${{ env.ECR_REPOSITORY }}:.*|image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}|" apps/stage/hello-app/deployment.yaml
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Update image tag to ${{ env.IMAGE_TAG }}" || exit 0
-          git push origin main
 
 
