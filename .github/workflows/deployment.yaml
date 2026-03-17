@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: us-east-2
-      AWS_DEFAULT_REGION: us-east-2
       ECR_REGISTRY: 128955061512.dkr.ecr.us-east-2.amazonaws.com
       ECR_REPOSITORY: hello-world
+      DEPLOY_REPO: noy5277/cp-interview-deployments
     steps:
       - uses: actions/checkout@v4
 
@@ -28,39 +28,26 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Export image variables
-        run: |
-          echo "IMAGE_URI=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> "$GITHUB_ENV"
-          echo "IMAGE_TAG=${{ github.sha }}" >> "$GITHUB_ENV"
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Build and push
         run: |
+          IMAGE_TAG=${{ github.sha }}
+          IMAGE_URI=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
           docker buildx build \
             --platform linux/amd64 \
             -t "${IMAGE_URI}:${IMAGE_TAG}" \
-            -f Dockerfile \
-            . \
-            --push 
+            -f Dockerfile . --push
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
 
-      - name: Clone deployment repo
+      - name: Update Deployment Repo
         run: |
-          git clone https://${{ secrets.DEPLOYMENT_REPO_TOKEN }}@github.com/noy5277/cp-interview-deployments.git
-          cd cp-interview-deployments
-          git remote set-url origin https://${{ secrets.DEPLOYMENT_REPO_TOKEN }}@github.com/noy5277/cp-interview-deployments.git
-      
-      - name: Edit docker tag Commit and push
-        run: |
-          cd cp-interview-deployments
-          sed -i -E "s|(image:.*:).*|\1${IMAGE_TAG}|" apps/stage/hello-app/deployment.yaml
-
-      - name: Commit and push
-        run: |
-          cd cp-interview-deployments
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git clone https://x-access-token:${{ secrets.DEPLOYMENT_REPO_TOKEN }}@://github.com{{ env.DEPLOY_REPO }}.git deploy-repo
+          cd deploy-repo
+          sed -i "s|image:.*${{ env.ECR_REPOSITORY }}:.*|image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}|" apps/stage/hello-app/deployment.yaml
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "New docker release" || echo "No changes"
+          git commit -m "Update image tag to ${{ env.IMAGE_TAG }}" || exit 0
           git push origin main
