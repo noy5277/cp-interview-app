@@ -45,8 +45,7 @@ jobs:
           docker build \
             -t "$IMAGE_URI:${{ steps.vars.outputs.short_sha }}" \
             -t "$IMAGE_URI:latest" \
-            -f Dockerfile \
-            .
+            -f .
 
       - name: Push image tags
         run: |
