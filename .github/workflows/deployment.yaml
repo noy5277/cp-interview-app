@@ -48,12 +48,8 @@ jobs:
       
       - name: Edit docker tag
         run: |
-          ls -la
-          pwd
           cd cp-interview-deployments
-          ls -la
-          pwd
-          sed -E 's/(image:.*:).*/\1${IMAGE_TAG}/' app/stage/hello-app/deployment.yaml
+          sed -E 's/(image:.*:).*/\1${IMAGE_TAG}/' apps/stage/hello-app/deployment.yaml
 
       - name: Commit and push
         run: |
