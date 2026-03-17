@@ -41,7 +41,7 @@ jobs:
             -f Dockerfile . --push
           echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
 
-      - name: Update Deployment Repo
+      - name: Update Deployment Repo 
         run: |
           git clone https://${{ secrets.DEPLOYMENT_REPO_TOKEN }}@github.com/noy5277/cp-interview-deployments.git deploy-repo
           git config --global user.email "github@github.com"
