@@ -18,10 +18,6 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Docker
-Dockerfile
-.dockerignore
-
 # Build output (if any)
 dist/
 build/
