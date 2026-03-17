@@ -41,7 +41,7 @@ jobs:
             -t "${IMAGE_URI}:latest" \
             -f Dockerfile \
             . \
-            --push
+            --push 
 
       - name: Clone deployment repo
         run: |
