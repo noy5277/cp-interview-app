@@ -48,6 +48,7 @@ jobs:
       
       - name: Edit docker tag
         run: |
+          cd cp-interview-deployments
           sed -E 's/(image:.*:).*/\1${IMAGE_TAG}/' app/stage/hello-app/deployment.yaml
 
       - name: Commit and push
