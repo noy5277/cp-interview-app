@@ -45,7 +45,7 @@ jobs:
 
       - name: Clone deployment repo
         run: |
-          git clone https://${{ secret.DEPLOYMENT_REPO_TOKEN }}@github.com/noy5277/cp-interview-deployments.git
+          git clone https://${{ secrets.DEPLOYMENT_REPO_TOKEN }}@github.com/noy5277/cp-interview-deployments.git
       
       - name: Edit docker tag
         run: |
