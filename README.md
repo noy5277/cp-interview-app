@@ -6,7 +6,7 @@ Hello World
 
 ## GitHub Workflow: Build & Push to Amazon ECR
 
-This project includes a GitHub Actions workflow that automatically builds and pushes the Docker image to Amazon ECR whenever changes are made inside the app/ directory.
+- This project includes a GitHub Actions workflow that automatically builds and pushes the Docker image to Amazon ECR whenever changes are made inside the app/ directory.
 The workflow:
 
 Builds the Docker image using the updated source code.
@@ -18,14 +18,7 @@ Pushes the image to your ECR repository:
 ```
 ---
 
-## Project Structure
-```
-.
-├── app/
-│   └── index.js
-├── Dockerfile
-└── README.md
-```
+- Update the container image tag to the new image hash in the cp-interview-deployments repository’s deployment file, then commit and push the change to the main branch.
 
 ## Build the Docker Image
 
