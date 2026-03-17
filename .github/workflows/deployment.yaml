@@ -32,18 +32,18 @@ jobs:
         run: |
           aws ecr get-login-password --region $AWS_REGION \
             | docker login --username AWS --password-stdin $ECR_REGISTRY
-
-      - name: Compute mage tags
-        id: vars
-        run: |
-          SHORT_SHA="${GITHUB_SHA::7}"
-          echo "short_sha=$SHORT_SHA" >> "$GITHUB_OUTPUT"
       
+      - name: Set image variables
+        run: |
+          echo "IMAGE_URI=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_EN
+
       - name: Build and push
         run: |
           docker buildx build \
             --platform linux/amd64 \
-            -t "${IMAGE_URI}:${{ steps.vars.outputs.short_sha }}" \
+            -t "${IMAGE_URI}:${IMAGE_TAG}" \
             -f Dockerfile \
             . \
             --push
+
