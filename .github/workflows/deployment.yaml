@@ -44,10 +44,10 @@ jobs:
       - name: Update Deployment Repo
         run: |
           git clone https://${{ secrets.DEPLOYMENT_REPO_TOKEN }}@github.com/noy5277/cp-interview-deployments.git deploy-repo
-          cd deploy-repo
-          sed -i "s|image:.*${{ env.ECR_REPOSITORY }}:.*|image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}|" apps/stage/hello-app/deployment.yaml
           git config --global user.email "github@github.com
           git config --global user.name "github
+          cd deploy-repo
+          sed -i "s|image:.*${{ env.ECR_REPOSITORY }}:.*|image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}|" apps/stage/hello-app/deployment.yaml
           git add .
           git commit -m "docker release"
           git push origin main"
